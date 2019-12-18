@@ -1,3 +1,4 @@
-pub fn hello_world() {
-  "Hello, from jsone_gleam!"
-}
+import gleam/dynamic.{Dynamic}
+
+pub external fn parse_json(String) -> Dynamic
+  = "jsone" "decode"
