@@ -1,6 +1,6 @@
 {application, jsone_gleam,
- [{description, "A Gleam program"},
-  {vsn, "1.0.0"},
+ [{description, "jsone bindings for the Gleam language"},
+  {vsn, "0.1.0"},
   {registered, []},
   {applications,
    [kernel,
