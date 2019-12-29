@@ -1,8 +1,10 @@
 {"1.1.0",
-[{<<"gleam_stdlib">>,{pkg,<<"gleam_stdlib">>,<<"0.6.0">>},0},
+[{<<"gleam_decode">>,{pkg,<<"gleam_decode">>,<<"1.1.0">>},0},
+ {<<"gleam_stdlib">>,{pkg,<<"gleam_stdlib">>,<<"0.6.0">>},0},
  {<<"jsone">>,{pkg,<<"jsone">>,<<"1.5.2">>},0}]}.
 [
 {pkg_hash,[
+ {<<"gleam_decode">>, <<"3D3856FD7B03AE3799C8B6665D218D567EBA4DAC5E05A466AF79C7086A3FE0CD">>},
  {<<"gleam_stdlib">>, <<"93D298A1DE4A65C7A8B18451AB761259B126DC7AB216AEB94D1541242618CE0B">>},
  {<<"jsone">>, <<"87ADEA283C9CF24767B4DEED44602989A5331156DF5D60A2660E9C9114D54046">>}]}
 ].

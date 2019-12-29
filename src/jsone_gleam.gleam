@@ -8,7 +8,7 @@ import gleam/string
 
 pub type JsonError {
   InvalidJson // this means that the jsone erlang function failed in an expected way (which we assume to be because the JSON was invalid)
-  DecodingFailure(String) // this means that Erlang to Gleam decoding failed
+  DecodingFailure(String) // this means that Erlang to Gleam decoding failed—-TODO, come up with a better name?
 }
 
 pub type JsonDecoder(a) {
@@ -40,11 +40,6 @@ type JsoneTryDecodeResult {
   JsoneDecodeFailure // TODO: Add more granularity to this?
 }
 
-// TODO: Add this to the gleam_decode library.
-fn dynamic_decoder() -> Decoder(Dynamic) {
-  Decoder(fn(dyn) { Ok(dyn) })
-}
-
 // 1. Get the first element in the tuple, which is an atom (technically could
 //    fail but probably won't)
 // 2. Check whether the atom is ok or error (this determines whether the JSON
@@ -52,7 +47,7 @@ fn dynamic_decoder() -> Decoder(Dynamic) {
 // 3. If the JSON is valid, return the Dynamic that it has become
 fn jsone_try_decode_decoder() -> Decoder(JsoneTryDecodeResult) {
   let ok_decoder =
-    decode.element(1, dynamic_decoder())
+    decode.element(1, decode.dynamic())
     |> decode.map(JsoneDecodeSuccess, _)
   let error_decoder =
     decode.succeed(JsoneDecodeFailure)
