@@ -2,8 +2,15 @@ import decode.{Decoder, decode_dynamic}
 import gleam/atom as atom_mod
 import gleam/dynamic.{Dynamic}
 import gleam/string
+import gleam/map
+import gleam/pair
+import gleam/list as list_mod
+
+// TODO: Add some decoding/encoding options?
 
 // DECODING
+//
+// TODO: Write a set of decoders specifically for JSON?
 
 external fn jsone_try_decode(String) -> Dynamic
   = "jsone" "try_decode"
@@ -45,3 +52,113 @@ pub fn decode_json(json: String) -> Result(Dynamic, String) {
 
 
 // ENCODING
+
+pub type JsonNumber {
+  JsonInt(Int)
+  JsonFloat(Float)
+}
+
+pub type JsonValue {
+  JsonString(String)
+  JsonNumber(JsonNumber)
+  JsonArray(List(JsonValue))
+  JsonBool(Bool)
+  JsonNull
+  JsonObject(List(tuple(String, JsonValue)))
+}
+
+pub fn encode_string(string: String) -> JsonValue {
+  JsonString(string)
+}
+
+pub fn encode_int(int: Int) -> JsonValue {
+  JsonNumber(JsonInt(int))
+}
+
+pub fn encode_float(float: Float) -> JsonValue {
+  JsonNumber(JsonFloat(float))
+}
+
+pub fn encode_array(list: List(a), encoder: fn(a) -> JsonValue) -> JsonValue {
+  list
+  |> list_mod.map(_, encoder)
+  |> JsonArray
+}
+
+pub fn encode_bool(bool: Bool) -> JsonValue {
+  JsonBool(bool)
+}
+
+pub fn encode_null() -> JsonValue {
+  JsonNull
+}
+
+pub fn encode_object(object: List(tuple(String, JsonValue))) -> JsonValue {
+  JsonObject(object)
+}
+
+fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
+  case json_value {
+    JsonString(string) -> dynamic.from(string)
+    JsonNumber(json_number) ->
+      case json_number {
+        JsonInt(int) -> dynamic.from(int)
+        JsonFloat(float) -> dynamic.from(float)
+      }
+    JsonArray(list) ->
+      list
+      |> list_mod.map(_, prepare_for_encoding)
+      |> dynamic.from
+    JsonNull ->
+      "null"
+      |> atom_mod.create_from_string
+      |> dynamic.from
+    JsonBool(bool) -> dynamic.from(bool)
+    JsonObject(object) ->
+      object
+      |> list_mod.map(_, pair.map_second(_, prepare_for_encoding))
+      |> map.from_list
+      |> dynamic.from
+  }
+}
+
+external fn jsone_try_encode(Dynamic) -> Dynamic =
+  "jsone" "try_encode"
+
+// TODO: Consider whether this is a generic pattern that could be brought into
+// the decode library, or else be abstracted here.
+fn jsone_try_encode_decoder() -> Decoder(Dynamic)  {
+  let ok_decoder =
+    decode.element(1, decode.dynamic())
+  let error_decoder =
+    decode.fail("Invalid JSON value")
+  let failure_decoder =
+    fn(atom_as_string) {
+      "Unexpected atom '"
+      |> string.append(_, atom_as_string)
+      |> string.append(_, "' in first position of tuple")
+      |> decode.fail
+    }
+
+  let success_or_failure_fun =
+    fn(result_atom) {
+      case atom_mod.to_string(result_atom) {
+        "ok" ->
+          ok_decoder
+        "error" ->
+          error_decoder
+        atom_as_string ->
+          failure_decoder(atom_as_string)
+      }
+    }
+
+  decode.element(0, decode.atom())
+  |> decode.then(_, success_or_failure_fun)
+}
+
+pub fn encode_json(json_value: JsonValue) -> Result(Dynamic, String) {
+  json_value
+  |> prepare_for_encoding
+  |> jsone_try_encode
+  |> decode_dynamic(_, jsone_try_encode_decoder())
+}
