@@ -6,7 +6,7 @@ import gleam/map
 import gleam/pair
 import gleam/list as list_mod
 
-// TODO: Add some decoding/encoding options?
+// TODO: Add some decoding/encoding options.
 
 // DECODING
 //
@@ -16,32 +16,10 @@ external fn jsone_try_decode(String) -> Dynamic
   = "jsone" "try_decode"
 
 fn jsone_try_decode_decoder() -> Decoder(Dynamic) {
-  let ok_decoder =
-    decode.element(1, decode.dynamic())
-  let error_decoder =
-    decode.fail("Invalid JSON")
-  let failure_decoder =
-    fn(atom_as_string) {
-      "Unexpected atom '"
-      |> string.append(_, atom_as_string)
-      |> string.append(_, "' in first position of tuple")
-      |> decode.fail
-    }
+  let ok_decoder = decode.element(1, decode.dynamic())
+  let error_decoder = decode.fail("Invalid JSON")
 
-  let success_or_failure_fun =
-    fn(result_atom) {
-      case atom_mod.to_string(result_atom) {
-        "ok" ->
-          ok_decoder
-        "error" ->
-          error_decoder
-        atom_as_string ->
-          failure_decoder(atom_as_string)
-      }
-    }
-
-  decode.element(0, decode.atom())
-  |> decode.then(_, success_or_failure_fun)
+  decode.ok_error_tuple(ok_decoder, error_decoder)
 }
 
 pub fn decode_json(json: String) -> Result(Dynamic, String) {
@@ -125,35 +103,11 @@ fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
 external fn jsone_try_encode(Dynamic) -> Dynamic =
   "jsone" "try_encode"
 
-// TODO: Consider whether this is a generic pattern that could be brought into
-// the decode library, or else be abstracted here.
 fn jsone_try_encode_decoder() -> Decoder(Dynamic)  {
-  let ok_decoder =
-    decode.element(1, decode.dynamic())
-  let error_decoder =
-    decode.fail("Invalid JSON value")
-  let failure_decoder =
-    fn(atom_as_string) {
-      "Unexpected atom '"
-      |> string.append(_, atom_as_string)
-      |> string.append(_, "' in first position of tuple")
-      |> decode.fail
-    }
+  let ok_decoder = decode.element(1, decode.dynamic())
+  let error_decoder = decode.fail("Invalid JSON value")
 
-  let success_or_failure_fun =
-    fn(result_atom) {
-      case atom_mod.to_string(result_atom) {
-        "ok" ->
-          ok_decoder
-        "error" ->
-          error_decoder
-        atom_as_string ->
-          failure_decoder(atom_as_string)
-      }
-    }
-
-  decode.element(0, decode.atom())
-  |> decode.then(_, success_or_failure_fun)
+  decode.ok_error_tuple(ok_decoder, error_decoder)
 }
 
 pub fn encode_json(json_value: JsonValue) -> Result(Dynamic, String) {
