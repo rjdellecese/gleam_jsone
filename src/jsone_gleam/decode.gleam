@@ -6,9 +6,53 @@ import gleam/map
 import gleam/pair
 import gleam/list as list_mod
 
-// TODO: Add options.
+
+// OPTIONS
+
+pub type DuplicateMapKeys {
+  First
+  Last
+}
+
+pub type Options {
+  Options(
+    // allow_ctrl_chars: Bool,
+    // reject_invalid_utf8: Bool,
+    duplicate_map_keys: DuplicateMapKeys
+  )
+}
+
+pub fn default_options() -> Options {
+  Options(
+    // allow_ctrl_chars: False,
+    // reject_invalid_utf8: True,
+    duplicate_map_keys: First
+  )
+}
+
+// Transforms the jsone options from Gleam into their proper Erlang format.
+fn transform_options(options: Options) -> Dynamic {
+  let Options(duplicate_map_keys: duplicate_map_keys) = options
+  let duplicate_map_keys_encoded =
+    tuple(
+      atom_mod.create_from_string("duplicate_map_keys"),
+      case duplicate_map_keys {
+        First -> atom_mod.create_from_string("first")
+        Last -> atom_mod.create_from_string("last")
+      }
+    )
+
+  [duplicate_map_keys_encoded]
+  |> dynamic.from
+}
+
+
+// DECODING
 
 external fn jsone_try_decode(String) -> Dynamic
+  = "jsone" "try_decode"
+
+external fn jsone_try_decode_with_options(String, Dynamic) -> Dynamic
   = "jsone" "try_decode"
 
 fn jsone_try_decode_decoder() -> Decoder(Dynamic) {
@@ -21,5 +65,15 @@ fn jsone_try_decode_decoder() -> Decoder(Dynamic) {
 pub fn decode_json(json: String) -> Result(Dynamic, String) {
   json
   |> jsone_try_decode
+  |> decode_dynamic(_, jsone_try_decode_decoder())
+}
+
+pub fn decode_json_with_options(
+  json: String,
+  options: Options
+) -> Result(Dynamic, String)
+{
+  json
+  |> jsone_try_decode_with_options(_, transform_options(options))
   |> decode_dynamic(_, jsone_try_decode_decoder())
 }

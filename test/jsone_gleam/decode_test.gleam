@@ -2,7 +2,12 @@ import decode.{decode_dynamic}
 import gleam/atom.{Atom}
 import gleam/expect
 import gleam/result
-import jsone_gleam/decode.{decode_json} as jsone_decode
+import jsone_gleam/decode.{
+  decode_json,
+  decode_json_with_options,
+  Options,
+  DuplicateMapKeys
+} as jsone_decode
 
 fn json_basics() -> String {
   "
@@ -98,4 +103,35 @@ pub fn decode_json_test() {
       string: "Hello World"
     )
   ))
+}
+
+pub fn duplicate_map_keys_test() {
+  let json_with_duplicate_keys =
+    "
+    {
+      \"duplicate\": \"first\",
+      \"duplicate\": \"last\"
+    }
+    "
+
+  let duplicate_decoder = decode.field("duplicate", decode.string())
+  let duplicate_keys_first_option =
+    Options(
+      duplicate_map_keys: jsone_decode.First
+    )
+
+  json_with_duplicate_keys
+  |> decode_json_with_options(_, duplicate_keys_first_option)
+  |> result.then(_, decode_dynamic(_, duplicate_decoder))
+  |> expect.equal(_, Ok("first"))
+
+  let duplicate_keys_last_option =
+    Options(
+      duplicate_map_keys: jsone_decode.Last
+    )
+
+  json_with_duplicate_keys
+  |> decode_json_with_options(_, duplicate_keys_last_option)
+  |> result.then(_, decode_dynamic(_, duplicate_decoder))
+  |> expect.equal(_, Ok("last"))
 }
