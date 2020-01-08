@@ -16,7 +16,7 @@ pub type DuplicateMapKeys {
 
 pub type Options {
   Options(
-    // allow_ctrl_chars: Bool,
+    allow_ctrl_chars: Bool,
     // reject_invalid_utf8: Bool,
     duplicate_map_keys: DuplicateMapKeys
   )
@@ -24,7 +24,7 @@ pub type Options {
 
 pub fn default_options() -> Options {
   Options(
-    // allow_ctrl_chars: False,
+    allow_ctrl_chars: False,
     // reject_invalid_utf8: True,
     duplicate_map_keys: First
   )
@@ -32,8 +32,12 @@ pub fn default_options() -> Options {
 
 // Transforms the jsone options from Gleam into their proper Erlang format.
 fn transform_options(options: Options) -> Dynamic {
-  let Options(duplicate_map_keys: duplicate_map_keys) = options
-  let duplicate_map_keys_encoded =
+  let Options(
+    duplicate_map_keys: duplicate_map_keys,
+    allow_ctrl_chars: allow_ctrl_chars
+  ) = options
+
+  let duplicate_map_keys_dynamic =
     tuple(
       atom_mod.create_from_string("duplicate_map_keys"),
       case duplicate_map_keys {
@@ -41,10 +45,25 @@ fn transform_options(options: Options) -> Dynamic {
         Last -> atom_mod.create_from_string("last")
       }
     )
+    |> dynamic.from
+  let allow_ctrl_chars_dynamic =
+    tuple(
+      atom_mod.create_from_string("allow_ctrl_chars"),
+      allow_ctrl_chars
+    )
+    |> dynamic.from
 
-  [duplicate_map_keys_encoded]
+
+  [duplicate_map_keys_dynamic, allow_ctrl_chars_dynamic]
   |> dynamic.from
 }
+
+
+// ERRORS
+
+// pub type JsonDecodeError {
+//   
+// }
 
 
 // DECODING
