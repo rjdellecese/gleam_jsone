@@ -1,4 +1,4 @@
-# jsone_gleam
+# gleam_jsone
 
 
 A Gleam program

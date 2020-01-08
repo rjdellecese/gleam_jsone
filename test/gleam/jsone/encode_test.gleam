@@ -1,7 +1,7 @@
 import decode.{decode_dynamic}
 import gleam/expect
 import gleam/result
-import jsone_gleam/encode.{
+import gleam/jsone/encode.{
   encode_json,
   string,
   int,

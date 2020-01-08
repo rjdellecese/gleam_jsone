@@ -1,4 +1,4 @@
-{application, jsone_gleam,
+{application, gleam_jsone,
  [{description, "jsone bindings for the Gleam language"},
   {vsn, "0.1.0"},
   {registered, []},

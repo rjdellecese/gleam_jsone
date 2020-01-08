@@ -2,7 +2,7 @@ import decode.{decode_dynamic}
 import gleam/atom.{Atom}
 import gleam/expect
 import gleam/result
-import jsone_gleam/decode.{
+import gleam/jsone/decode.{
   decode_json,
   decode_json_with_options,
   Options,
