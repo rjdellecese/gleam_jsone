@@ -115,25 +115,27 @@ pub fn duplicate_map_keys_test() {
     "
 
   let duplicate_decoder = decode.field("duplicate", decode.string())
-  let duplicate_keys_first_option =
+  let duplicate_keys_first_options =
     Options(
       duplicate_map_keys: jsone_decode.First,
+      reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   json_with_duplicate_keys
-  |> decode_json_with_options(_, duplicate_keys_first_option)
+  |> decode_json_with_options(_, duplicate_keys_first_options)
   |> result.then(_, decode_dynamic(_, duplicate_decoder))
   |> expect.equal(_, Ok("first"))
 
-  let duplicate_keys_last_option =
+  let duplicate_keys_last_options =
     Options(
       duplicate_map_keys: jsone_decode.Last,
+      reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   json_with_duplicate_keys
-  |> decode_json_with_options(_, duplicate_keys_last_option)
+  |> decode_json_with_options(_, duplicate_keys_last_options)
   |> result.then(_, decode_dynamic(_, duplicate_decoder))
   |> expect.equal(_, Ok("last"))
 }
@@ -145,25 +147,27 @@ external fn string_with_escaped_newline() -> String =
   "test_helpers" "string_with_escaped_newline"
 
 pub fn allow_ctrl_chars_test() {
-  let allow_ctrl_chars_false_option =
+  let allow_ctrl_chars_true_option =
     Options(
       duplicate_map_keys: jsone_decode.First,
+      reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   string_with_unescaped_newline()
-  |> decode_json_with_options(_, allow_ctrl_chars_false_option)
+  |> decode_json_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_error
 
   string_with_escaped_newline()
-  |> decode_json_with_options(_, allow_ctrl_chars_false_option)
+  |> decode_json_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_ok
 
   let allow_ctrl_chars_true_option =
     Options(
       duplicate_map_keys: jsone_decode.First,
+      reject_invalid_utf8: False,
       allow_ctrl_chars: True
     )
 
@@ -171,4 +175,33 @@ pub fn allow_ctrl_chars_test() {
   |> decode_json_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_ok
+}
+
+external fn string_with_invalid_utf8() -> String =
+  "test_helpers" "string_with_invalid_utf8"
+
+pub fn reject_invalid_utf8_test() {
+  let reject_invalid_utf8_false_options =
+    Options(
+      duplicate_map_keys: jsone_decode.First,
+      reject_invalid_utf8: False,
+      allow_ctrl_chars: False
+    )
+
+  string_with_invalid_utf8()
+  |> decode_json_with_options(_, reject_invalid_utf8_false_options)
+  |> result.then(_, decode_dynamic(_, decode.string()))
+  |> expect.is_ok
+
+  let reject_invalid_utf8_true_options =
+    Options(
+      duplicate_map_keys: jsone_decode.First,
+      reject_invalid_utf8: True,
+      allow_ctrl_chars: False
+    )
+
+  string_with_invalid_utf8()
+  |> decode_json_with_options(_, reject_invalid_utf8_true_options)
+  |> result.then(_, decode_dynamic(_, decode.string()))
+  |> expect.is_error
 }

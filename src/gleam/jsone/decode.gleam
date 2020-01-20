@@ -17,7 +17,7 @@ pub type DuplicateMapKeys {
 pub type Options {
   Options(
     allow_ctrl_chars: Bool,
-    // reject_invalid_utf8: Bool,
+    reject_invalid_utf8: Bool,
     duplicate_map_keys: DuplicateMapKeys
   )
 }
@@ -25,7 +25,7 @@ pub type Options {
 pub fn default_options() -> Options {
   Options(
     allow_ctrl_chars: False,
-    // reject_invalid_utf8: True,
+    reject_invalid_utf8: False,
     duplicate_map_keys: First
   )
 }
@@ -34,6 +34,7 @@ pub fn default_options() -> Options {
 fn transform_options(options: Options) -> Dynamic {
   let Options(
     duplicate_map_keys: duplicate_map_keys,
+    reject_invalid_utf8: reject_invalid_utf8,
     allow_ctrl_chars: allow_ctrl_chars
   ) = options
 
@@ -46,6 +47,7 @@ fn transform_options(options: Options) -> Dynamic {
       }
     )
     |> dynamic.from
+
   let allow_ctrl_chars_dynamic =
     tuple(
       atom_mod.create_from_string("allow_ctrl_chars"),
@@ -53,8 +55,20 @@ fn transform_options(options: Options) -> Dynamic {
     )
     |> dynamic.from
 
+  let reject_invalid_utf8_dynamic =
+    atom_mod.create_from_string("reject_invalid_utf8")
+    |> dynamic.from
+
+  let maybe_prepend_reject_invalid_utf8_dynamic =
+    fn(options: List(Dynamic)) {
+      case reject_invalid_utf8 {
+        True -> [reject_invalid_utf8_dynamic | options]
+        False -> options
+      }
+    }
 
   [duplicate_map_keys_dynamic, allow_ctrl_chars_dynamic]
+  |> maybe_prepend_reject_invalid_utf8_dynamic
   |> dynamic.from
 }
 
