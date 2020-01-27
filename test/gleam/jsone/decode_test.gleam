@@ -2,12 +2,10 @@ import decode.{decode_dynamic}
 import gleam/atom.{Atom}
 import gleam/expect
 import gleam/result
-import gleam/jsone/decode.{
-  decode_json,
-  decode_json_with_options,
+import gleam/jsone.{
   Options,
   DuplicateMapKeys
-} as jsone_decode
+}
 
 fn json_basics() -> String {
   "
@@ -55,14 +53,14 @@ type JsonBasics {
   )
 }
 
-pub fn decode_json_test() {
+pub fn decode_test() {
   "1"
-  |> decode_json
+  |> jsone.decode
   |> result.then(_, decode_dynamic(_, decode.int()))
   |> expect.equal(_, Ok(1))
 
   "<1x.1"
-  |> decode_json
+  |> jsone.decode
   |> expect.equal(_, Error("Invalid JSON"))
 
   let json_basics_object_decoder =
@@ -86,7 +84,7 @@ pub fn decode_json_test() {
     )
 
   json_basics()
-  |> decode_json
+  |> jsone.decode
   |> result.then(_, decode_dynamic(_, json_basics_decoder))
   |> expect.equal(_, Ok(
     JsonBasics(
@@ -117,25 +115,25 @@ pub fn duplicate_map_keys_test() {
   let duplicate_decoder = decode.field("duplicate", decode.string())
   let duplicate_keys_first_options =
     Options(
-      duplicate_map_keys: jsone_decode.First,
+      duplicate_map_keys: jsone.First,
       reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   json_with_duplicate_keys
-  |> decode_json_with_options(_, duplicate_keys_first_options)
+  |> jsone.decode_with_options(_, duplicate_keys_first_options)
   |> result.then(_, decode_dynamic(_, duplicate_decoder))
   |> expect.equal(_, Ok("first"))
 
   let duplicate_keys_last_options =
     Options(
-      duplicate_map_keys: jsone_decode.Last,
+      duplicate_map_keys: jsone.Last,
       reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   json_with_duplicate_keys
-  |> decode_json_with_options(_, duplicate_keys_last_options)
+  |> jsone.decode_with_options(_, duplicate_keys_last_options)
   |> result.then(_, decode_dynamic(_, duplicate_decoder))
   |> expect.equal(_, Ok("last"))
 }
@@ -149,30 +147,30 @@ external fn string_with_escaped_newline() -> String =
 pub fn allow_ctrl_chars_test() {
   let allow_ctrl_chars_true_option =
     Options(
-      duplicate_map_keys: jsone_decode.First,
+      duplicate_map_keys: jsone.First,
       reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   string_with_unescaped_newline()
-  |> decode_json_with_options(_, allow_ctrl_chars_true_option)
+  |> jsone.decode_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_error
 
   string_with_escaped_newline()
-  |> decode_json_with_options(_, allow_ctrl_chars_true_option)
+  |> jsone.decode_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_ok
 
   let allow_ctrl_chars_true_option =
     Options(
-      duplicate_map_keys: jsone_decode.First,
+      duplicate_map_keys: jsone.First,
       reject_invalid_utf8: False,
       allow_ctrl_chars: True
     )
 
   string_with_unescaped_newline()
-  |> decode_json_with_options(_, allow_ctrl_chars_true_option)
+  |> jsone.decode_with_options(_, allow_ctrl_chars_true_option)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_ok
 }
@@ -183,25 +181,25 @@ external fn string_with_invalid_utf8() -> String =
 pub fn reject_invalid_utf8_test() {
   let reject_invalid_utf8_false_options =
     Options(
-      duplicate_map_keys: jsone_decode.First,
+      duplicate_map_keys: jsone.First,
       reject_invalid_utf8: False,
       allow_ctrl_chars: False
     )
 
   string_with_invalid_utf8()
-  |> decode_json_with_options(_, reject_invalid_utf8_false_options)
+  |> jsone.decode_with_options(_, reject_invalid_utf8_false_options)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_ok
 
   let reject_invalid_utf8_true_options =
     Options(
-      duplicate_map_keys: jsone_decode.First,
+      duplicate_map_keys: jsone.First,
       reject_invalid_utf8: True,
       allow_ctrl_chars: False
     )
 
   string_with_invalid_utf8()
-  |> decode_json_with_options(_, reject_invalid_utf8_true_options)
+  |> jsone.decode_with_options(_, reject_invalid_utf8_true_options)
   |> result.then(_, decode_dynamic(_, decode.string()))
   |> expect.is_error
 }
