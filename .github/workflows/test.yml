@@ -8,21 +8,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2.0.0
 
-      - name: Run Gleam tests
-        uses: gleam-lang/setup-erlang@v1.0.0
+      - uses: gleam-lang/setup-erlang@v1.0.0
         with:
           otp-version: 22.1
       - uses: gleam-lang/setup-gleam@v1.0.1
         with:
           gleam-version: 0.7.1
       - run: rebar3 install_deps
-      - run: rebar3 eunit
+      - name: Run Gleam tests
+        run: rebar3 eunit
 
-      - name: Verify that Gleam code in README compiles
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
       - run: npm install -g codedown
+      - name: Verify that Gleam code in README compiles
       - run: |
           cat README.md | codedown rust > src/readme.gleam
           gleam build
