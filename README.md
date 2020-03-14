@@ -35,7 +35,7 @@ pub fn decode_json_int() -> Result(Int, String) {
   |> result.then(_, fn(json_dynamic) {
     dynamic.int(json_dynamic)
   }) //=> Ok(1)
-}
+};
 
 pub fn decode_json_object_field() -> Result(Bool, String) {
   "{ \"boolean\": true }"
@@ -46,14 +46,14 @@ pub fn decode_json_object_field() -> Result(Bool, String) {
   |> result.then(_, fn(boolean_field_dynamic) {
     dynamic.bool(boolean_field_dynamic)
   }) //=> Ok(true)
-}
+};
 
 pub type JsonObject {
   JsonObject(
     boolean: Bool,
     int: Int
   )
-}
+};
 
 pub fn decode_json_object() -> Result(JsonObject, String) {
   let dynamic_object_result =
@@ -89,7 +89,7 @@ pub fn decode_json_object() -> Result(JsonObject, String) {
     Ok(boolean_value), Ok(int_value) -> Ok(JsonObject(boolean_value, int_value))
     _, _ -> Error("Couldn't decode JSON into JsonObject.")
   } //=> Ok(JsonObject(true, 1))
-}
+};
 
 pub fn decode_bad_json() -> Result(Int, String) {
   "<1x.1"
