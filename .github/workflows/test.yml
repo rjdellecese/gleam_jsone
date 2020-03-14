@@ -23,6 +23,6 @@ jobs:
           node-version: '12.x'
       - run: npm install -g codedown
       - name: Verify that Gleam code in README compiles
-      - run: |
+        run: |
           cat README.md | codedown rust > src/readme.gleam
           gleam build
