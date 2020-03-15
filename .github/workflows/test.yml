@@ -1,6 +1,6 @@
-name: test
+name: Run Gleam tests and verify README examples
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test_and_verify_readme_examples:
