@@ -24,6 +24,13 @@ Add `gleam_jsone` to the deps section of your `rebar3.config` file.
 
 ## Examples
 
+This library allows you to decode JSON `String`s into Erlang `Dynamic` data. In
+order to turn that into Gleam data, you'll either need to use the functions for
+`Dynamic` data in the Gleam standard library, or a library like
+[`gleam_decode`](https://github.com/rjdellecese/gleam_decode). The examples
+below use the standard library functions, but you can check out the test suite
+for examples that use `gleam_decode`.
+
 ```rust
 import gleam/dynamic
 import gleam/jsone
