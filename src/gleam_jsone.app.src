@@ -2,13 +2,14 @@
  [{description, "jsone bindings for the Gleam language"},
   {vsn, "0.1.0"},
   {registered, []},
-  {applications,
-   [kernel,
-    stdlib
-   ]},
+  {applications, [kernel, stdlib]},
   {env,[]},
   {modules, []},
-
   {licenses, ["Apache 2.0"]},
-  {links, []}
+  {links, [
+           {"GitHub", "https://github.com/rjdellecese/gleam_jsone"},
+           {"Changelog",
+           "https://github.com/rjdellecese/gleam_jsone/blob/master/CHANGELOG.md"}
+          ]},
+  {include_files, ["gleam.toml", "gen/src"]}
 ]}.
