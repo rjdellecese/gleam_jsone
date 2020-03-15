@@ -15,7 +15,7 @@ Once we have nice error messages, we'll be ready for v1.0.0!
 
 ## Installation
 
-Add `gleam_jsone` to the deps section of your `rebar3.config` file.
+Add `gleam_jsone` to the deps section of your `rebar.config` file.
 
 ```erlang
 {deps, [
