@@ -1,4 +1,5 @@
 # gleam_jsone
+[![Hex.pm](https://img.shields.io/hexpm/v/gleam_jsone)](https://hex.pm/packages/gleam_jsone)
 
 Gleam bindings to the fast, simple JSON decoding/encoding Erlang library,
 [`jsone`](https://github.com/sile/jsone).
