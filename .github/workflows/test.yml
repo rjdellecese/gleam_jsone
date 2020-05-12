@@ -17,6 +17,7 @@ jobs:
       - run: rebar3 install_deps
       - name: Run Gleam tests
         run: rebar3 eunit
+      - run: gleam format --check src test
 
       - uses: actions/setup-node@v1
         with:
