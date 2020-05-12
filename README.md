@@ -40,7 +40,7 @@ import gleam/result
 pub fn decode_json_int() -> Result(Int, String) {
   "1"
   |> jsone.decode
-  |> result.then(_, fn(json_dynamic) {
+  |> result.then(fn(json_dynamic) {
     dynamic.int(json_dynamic)
   }) //=> Ok(1)
 };
@@ -48,10 +48,10 @@ pub fn decode_json_int() -> Result(Int, String) {
 pub fn decode_json_object_field() -> Result(Bool, String) {
   "{ \"boolean\": true }"
   |> jsone.decode
-  |> result.then(_, fn(json_dynamic) {
+  |> result.then(fn(json_dynamic) {
     dynamic.field(json_dynamic, "boolean")
   })
-  |> result.then(_, fn(boolean_field_dynamic) {
+  |> result.then(fn(boolean_field_dynamic) {
     dynamic.bool(boolean_field_dynamic)
   }) //=> Ok(true)
 };
@@ -75,20 +75,20 @@ pub fn decode_json_object() -> Result(JsonObject, String) {
 
   let boolean_value_result =
     dynamic_object_result
-    |> result.then(_, fn(dynamic_object) {
+    |> result.then(fn(dynamic_object) {
       dynamic_object
-      |> dynamic.field(_, "boolean")
-      |> result.then(_, fn(dynamic_boolean) {
+      |> dynamic.field("boolean")
+      |> result.then(fn(dynamic_boolean) {
         dynamic.bool(dynamic_boolean)
       })
     })
 
   let int_value_result =
     dynamic_object_result
-    |> result.then(_, fn(dynamic_object) {
+    |> result.then(fn(dynamic_object) {
       dynamic_object
-      |> dynamic.field(_, "int")
-      |> result.then(_, fn(dynamic_int) {
+      |> dynamic.field("int")
+      |> result.then(fn(dynamic_int) {
         dynamic.int(dynamic_int)
       })
     })
@@ -102,7 +102,7 @@ pub fn decode_json_object() -> Result(JsonObject, String) {
 pub fn decode_bad_json() -> Result(Int, String) {
   "<1x.1"
   |> jsone.decode
-  |> result.then(_, fn(json_dynamic) {
+  |> result.then(fn(json_dynamic) {
     dynamic.int(json_dynamic)
   }) //=> Error("Invalid JSON value")
 }
