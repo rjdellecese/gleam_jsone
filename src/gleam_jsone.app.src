@@ -6,8 +6,7 @@
               {env,[]},
               {modules,[]},
               {licenses,["Apache 2.0"]},
-              {links,[{"Documentation","https://hexdocs.pm/gleam_jsone/"},
-                      {"GitHub","https://github.com/rjdellecese/gleam_jsone"},
+              {links,[{"GitHub","https://github.com/rjdellecese/gleam_jsone"},
                       {"Changelog",
                        "https://github.com/rjdellecese/gleam_jsone/blob/master/CHANGELOG.md"}]},
               {include_files,["gleam.toml","gen/src"]}]}.
