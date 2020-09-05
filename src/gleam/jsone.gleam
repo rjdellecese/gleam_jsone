@@ -6,6 +6,13 @@ import gleam/map
 import gleam/pair
 import gleam/list as list_mod
 
+/// The option for determining whether to return the first or last key/value
+/// when there exist duplicates.
+pub type DuplicateMapKeys {
+  First
+  Last
+}
+
 // DECODING
 /// The available decoding options. The descriptions below are lifted or
 /// adapted from the [jsone docs](https://hexdocs.pm/jsone/).
@@ -38,12 +45,6 @@ pub type Options {
   )
 }
 
-/// The option for determining whether to return the first or last key/value
-/// when there exist duplicates.
-pub type DuplicateMapKeys {
-  First
-  Last
-}
 
 /// The default options used by the `decode` function.
 pub fn default_options() -> Options {
