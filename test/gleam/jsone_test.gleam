@@ -2,7 +2,7 @@ import decode.{decode_dynamic}
 import gleam/atom.{Atom}
 import gleam/should
 import gleam/result
-import gleam/jsone.{Options, DuplicateMapKeys}
+import gleam/jsone.{Options}
 
 // DECODING
 fn json_basics() -> String {
