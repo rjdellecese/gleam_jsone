@@ -10,7 +10,7 @@ jobs:
 
       - uses: gleam-lang/setup-erlang@v1.1.0
         with:
-          otp-version: 23.0
+          otp-version: 22.1
       - uses: gleam-lang/setup-gleam@v1.0.1
         with:
           gleam-version: 0.11.2
