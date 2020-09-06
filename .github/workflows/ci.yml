@@ -1,6 +1,6 @@
 name: Test, ensure formatted, and verify README examples
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   ci:
