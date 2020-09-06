@@ -1,6 +1,6 @@
 {application,gleam_jsone,
              [{description,"jsone bindings for the Gleam language"},
-              {vsn,"0.2.0"},
+              {vsn,"0.3.0"},
               {registered,[]},
               {applications,[kernel,stdlib]},
               {env,[]},
