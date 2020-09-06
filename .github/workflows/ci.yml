@@ -1,19 +1,19 @@
-name: Run Gleam tests and verify README examples
+name: Test, ensure formatted, and verify README examples
 
 on: [push]
 
 jobs:
-  test_and_verify_readme_examples:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.0.0
 
-      - uses: gleam-lang/setup-erlang@v1.0.0
+      - uses: gleam-lang/setup-erlang@v1.1.0
         with:
           otp-version: 22.1
       - uses: gleam-lang/setup-gleam@v1.0.1
         with:
-          gleam-version: 0.8.0
+          gleam-version: 0.11.2
       - run: rebar3 install_deps
       - name: Run Gleam tests
         run: rebar3 eunit
@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
       - run: npm install -g codedown
       - name: Verify that Gleam code in README compiles
         run: |

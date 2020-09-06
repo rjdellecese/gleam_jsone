@@ -45,7 +45,6 @@ pub type Options {
   )
 }
 
-
 /// The default options used by the `decode` function.
 pub fn default_options() -> Options {
   Options(
@@ -63,7 +62,8 @@ fn transform_options(options: Options) -> Dynamic {
     allow_ctrl_chars: allow_ctrl_chars,
   ) = options
 
-  let duplicate_map_keys_dynamic = tuple(
+  let duplicate_map_keys_dynamic =
+    tuple(
       atom_mod.create_from_string("duplicate_map_keys"),
       case duplicate_map_keys {
         First -> atom_mod.create_from_string("first")
@@ -72,15 +72,12 @@ fn transform_options(options: Options) -> Dynamic {
     )
     |> dynamic.from
 
-  let allow_ctrl_chars_dynamic = tuple(
-      atom_mod.create_from_string("allow_ctrl_chars"),
-      allow_ctrl_chars,
-    )
+  let allow_ctrl_chars_dynamic =
+    tuple(atom_mod.create_from_string("allow_ctrl_chars"), allow_ctrl_chars)
     |> dynamic.from
 
-  let reject_invalid_utf8_dynamic = atom_mod.create_from_string(
-      "reject_invalid_utf8",
-    )
+  let reject_invalid_utf8_dynamic =
+    atom_mod.create_from_string("reject_invalid_utf8")
     |> dynamic.from
 
   let maybe_prepend_reject_invalid_utf8_dynamic = fn(options: List(Dynamic)) {
@@ -181,22 +178,22 @@ pub fn object(object: List(tuple(String, JsonValue))) -> JsonValue {
 fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
   case json_value {
     JsonString(string) -> dynamic.from(string)
-    JsonNumber(json_number) -> case json_number {
-      JsonInt(int) -> dynamic.from(int)
-      JsonFloat(float) -> dynamic.from(float)
-    }
-    JsonArray(
-      list,
-    ) -> list
+    JsonNumber(json_number) ->
+      case json_number {
+        JsonInt(int) -> dynamic.from(int)
+        JsonFloat(float) -> dynamic.from(float)
+      }
+    JsonArray(list) ->
+      list
       |> list_mod.map(prepare_for_encoding)
       |> dynamic.from
-    JsonNull -> "null"
+    JsonNull ->
+      "null"
       |> atom_mod.create_from_string
       |> dynamic.from
     JsonBool(bool) -> dynamic.from(bool)
-    JsonObject(
-      object,
-    ) -> object
+    JsonObject(object) ->
+      object
       |> list_mod.map(pair.map_second(_, prepare_for_encoding))
       |> map.from_list
       |> dynamic.from
