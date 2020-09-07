@@ -176,7 +176,6 @@ pub fn reject_invalid_utf8_test() {
 
   string_with_invalid_utf8()
   |> jsone.decode_with_options(reject_invalid_utf8_false_options)
-  |> result.then(decode_dynamic(_, decode.string()))
   |> should.be_ok
 
   let reject_invalid_utf8_true_options =
