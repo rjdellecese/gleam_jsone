@@ -1,4 +1,5 @@
 # gleam_jsone
+
 [![Hex.pm](https://img.shields.io/hexpm/v/gleam_jsone)](https://hex.pm/packages/gleam_jsone) [![HexDocs.pm](https://img.shields.io/badge/hex-docs-ff69b4)](https://hexdocs.pm/gleam_jsone/)
 
 Gleam bindings to the fast, simple JSON decoding/encoding Erlang library,
@@ -19,7 +20,7 @@ Add `gleam_jsone` to the deps section of your `rebar.config` file.
 
 ```erlang
 {deps, [
-    {gleam_jsone, "0.3.1"}
+    {gleam_jsone, "0.4.0"}
 ]}.
 ```
 

@@ -45,7 +45,15 @@ pub type Options {
   )
 }
 
-/// The default options used by the `decode` function.
+/// The default options used by the `decode` function. They are:
+///
+/// ```
+/// Options(
+///   allow_ctrl_chars: False,
+///   reject_invalid_utf8: False,
+///   duplicate_map_keys: First,
+/// )
+/// ```
 pub fn default_options() -> Options {
   Options(
     allow_ctrl_chars: False,
@@ -106,6 +114,7 @@ fn jsone_try_decode_decoder() -> Decoder(Dynamic) {
   dynamic_decode.ok_error_tuple(ok_decoder, error_decoder)
 }
 
+// Uses the `default_options`.
 pub fn decode(json: String) -> Result(Dynamic, String) {
   json
   |> jsone_try_decode
