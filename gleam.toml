@@ -1,2 +1,2 @@
 name = "gleam_jsone"
-repository = { type = "GitHub", user = "rjdellecese", repo = "gleam_jsone" }
+repository = { type = "github", user = "rjdellecese", repo = "gleam_jsone" }
