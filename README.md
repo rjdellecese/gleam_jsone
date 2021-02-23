@@ -20,7 +20,7 @@ Add `gleam_jsone` to the deps section of your `rebar.config` file.
 
 ```erlang
 {deps, [
-    {gleam_jsone, "0.4.1"}
+    {gleam_jsone, "0.4.0"}
 ]}.
 ```
 
