@@ -184,7 +184,7 @@ pub fn object(object: List(tuple(String, JsonValue))) -> JsonValue {
   JsonObject(object)
 }
 
-fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
+pub fn to_dynamic(json_value: JsonValue) -> Dynamic {
   case json_value {
     JsonString(string) -> dynamic.from(string)
     JsonNumber(json_number) ->
@@ -194,7 +194,7 @@ fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
       }
     JsonArray(list) ->
       list
-      |> list_mod.map(prepare_for_encoding)
+      |> list_mod.map(to_dynamic)
       |> dynamic.from
     JsonNull ->
       "null"
@@ -203,7 +203,7 @@ fn prepare_for_encoding(json_value: JsonValue) -> Dynamic {
     JsonBool(bool) -> dynamic.from(bool)
     JsonObject(object) ->
       object
-      |> list_mod.map(pair.map_second(_, prepare_for_encoding))
+      |> list_mod.map(pair.map_second(_, to_dynamic))
       |> map.from_list
       |> dynamic.from
   }
@@ -222,7 +222,7 @@ fn jsone_try_decoder() -> Decoder(Dynamic) {
 /// Encode a JSON value as a UTF-8 binary.
 pub fn encode(json_value: JsonValue) -> Result(Dynamic, String) {
   json_value
-  |> prepare_for_encoding
+  |> to_dynamic
   |> jsone_try_encode
   |> decode_dynamic(jsone_try_decoder())
 }
