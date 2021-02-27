@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+## v0.5.0 - 2021-02-27
+
+### Added
+
+- Rename and expose `to_dynamic` function.
+
+### Changed
+
+- Relax dependency constraints.
+
 ## v0.4.0 - 2021-02-22
 
 ### Added
